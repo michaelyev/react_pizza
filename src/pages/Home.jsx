@@ -11,21 +11,34 @@ const Home = () => {
   const [pizzas, setPizza] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // children states
+  const [categoryId, setCategoryId] = useState(0)
+  const [sortType, setSortType] = useState({name: 'popularity', sortProperty: 'rating'})
+
+
 
   useEffect(() => {
-    fetch("https://646e6b9c9c677e23218ba3c6.mockapi.io/items")
+    setIsLoading(true);
+    fetch(`https://646e6b9c9c677e23218ba3c6.mockapi.io/items?${
+      categoryId > 0 ? `category=${categoryId} ` : ""
+    }
+    &sortBy=${sortType.sortProperty.replace('-', '')}&order=${sortType.sortProperty.includes('-')? 'asc':'desc'}
+    `) // 
       .then((res) => res.json())
       .then((pizzaData) => {
         setPizza(pizzaData);
         setIsLoading(false);
-      })
-      window.scrollTo( 0, 0)
-  }, []);
+        console.log(sortType.sortProperty) 
+      });
+    window.scrollTo(0, 0);
+  }, [categoryId, sortType]); // watching the change of categoryId
+
+  
   return (
     <div className="container">
       <div className="content__top">
-        <Categories />
-        <Sort />
+        <Categories categoryI={categoryId} setCategoryI={(id)=> setCategoryId(id)}/>
+        <Sort sortI={sortType} setSortI={(i) => setSortType(i)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">
