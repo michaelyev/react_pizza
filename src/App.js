@@ -15,7 +15,6 @@ import Cart from './pages/Cart';
 function App() {
   const[searchValue, setSearchValue] = useState('')
 
-  console.log(searchValue)
 
   return (
 
@@ -25,7 +24,7 @@ function App() {
         <div className="content">
           
             <Routes>
-              <Route path='/' element={<Home />} />
+              <Route path='/' element={<Home searchValue={searchValue} />} />
               <Route path='/cart' element = {<Cart />} />
               <Route path='*' element={<NotFound />} />
             </Routes>

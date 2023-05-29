@@ -7,37 +7,54 @@ import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
 import Sort from "../components/Sort";
 import Categories from "../components/Categories";
 
-const Home = () => {
+const Home = ({searchValue}) => {
   const [pizzas, setPizza] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // children states
-  const [categoryId, setCategoryId] = useState(0)
-  const [sortType, setSortType] = useState({name: 'popularity', sortProperty: 'rating'})
-
-
+  const [categoryId, setCategoryId] = useState(0);
+  const [sortType, setSortType] = useState({
+    name: "popularity",
+    sortProperty: "rating",
+  });
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(`https://646e6b9c9c677e23218ba3c6.mockapi.io/items?${
-      categoryId > 0 ? `category=${categoryId} ` : ""
-    }
-    &sortBy=${sortType.sortProperty.replace('-', '')}&order=${sortType.sortProperty.includes('-')? 'asc':'desc'}
-    `) // 
+    fetch(
+      `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?${
+        categoryId > 0 ? `category=${categoryId}` : ""
+      }&sortBy=${sortType.sortProperty.replace("-", "")}&order=${
+        sortType.sortProperty.includes("-") ? "asc" : "desc"
+      }`
+    ) //
       .then((res) => res.json())
       .then((pizzaData) => {
         setPizza(pizzaData);
         setIsLoading(false);
-        console.log(sortType.sortProperty) 
+        console.log(sortType.sortProperty);
       });
     window.scrollTo(0, 0);
   }, [categoryId, sortType]); // watching the change of categoryId
 
-  
+  const pizzasSorting = pizzas
+  .filter((obj) => {
+    if (obj.title.toLowerCase().includes(searchValue.toLowerCase())){
+      return true
+    } else {
+      return false
+    }
+  } )
+  .map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+
+
+
   return (
     <div className="container">
       <div className="content__top">
-        <Categories categoryI={categoryId} setCategoryI={(id)=> setCategoryId(id)}/>
+        <Categories
+          categoryI={categoryId}
+          setCategoryI={(id) => setCategoryId(id)}
+        />
         <Sort sortI={sortType} setSortI={(i) => setSortType(i)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
@@ -45,7 +62,8 @@ const Home = () => {
         <>
           {isLoading
             ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-            : pizzas.map((obj) => <PizzaBlock key={obj.id} {...obj} />)}
+            : pizzasSorting
+          }
         </>
 
         {/* <PizzaBlock

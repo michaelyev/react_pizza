@@ -12,7 +12,7 @@ const categoriesArr = [
 
 
 const Categories = ({categoryI, setCategoryI}) => {
-
+  
 
   return (
     <div className="categories">
