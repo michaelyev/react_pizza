@@ -13,12 +13,15 @@ import Cart from './pages/Cart';
 
 
 function App() {
+  const[searchValue, setSearchValue] = useState('')
+
+  console.log(searchValue)
 
   return (
 
     <body>
       <div className="wrapper">
-        <Header />
+        <Header searchValue={searchValue} setSearchValue={setSearchValue} />
         <div className="content">
           
             <Routes>
