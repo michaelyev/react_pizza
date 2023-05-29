@@ -17,13 +17,14 @@ const Home = ({searchValue}) => {
     name: "popularity",
     sortProperty: "rating",
   });
+  const search = searchValue ? `&search=${searchValue}` : ''
 
   useEffect(() => {
     setIsLoading(true);
     fetch(
       `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?${
         categoryId > 0 ? `category=${categoryId}` : ""
-      }&sortBy=${sortType.sortProperty.replace("-", "")}&order=${
+      }&sortBy=${sortType.sortProperty.replace("-", "")}${search}&order=${
         sortType.sortProperty.includes("-") ? "asc" : "desc"
       }`
     ) //
@@ -34,9 +35,11 @@ const Home = ({searchValue}) => {
         console.log(sortType.sortProperty);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType]); // watching the change of categoryId
+  }, [categoryId, sortType, searchValue]); // watching the change of categoryId
 
-  const pizzasSorting = pizzas
+
+
+  /* const pizzasSorting = pizzas
   .filter((obj) => {
     if (obj.title.toLowerCase().includes(searchValue.toLowerCase())){
       return true
@@ -44,7 +47,7 @@ const Home = ({searchValue}) => {
       return false
     }
   } )
-  .map((obj) => <PizzaBlock key={obj.id} {...obj} />)
+  .map((obj) => <PizzaBlock key={obj.id} {...obj} />) */
 
 
 
@@ -62,7 +65,7 @@ const Home = ({searchValue}) => {
         <>
           {isLoading
             ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-            : pizzasSorting
+            : pizzas.map(pizza => <PizzaBlock key={pizza.id} {...pizza} />)
           }
         </>
 
