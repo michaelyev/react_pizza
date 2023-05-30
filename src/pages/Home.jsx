@@ -6,8 +6,9 @@ import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
 import Sort from "../components/Sort";
 import Categories from "../components/Categories";
+import Pagination from "../components/Pagination";
 
-const Home = ({searchValue}) => {
+const Home = ({ searchValue }) => {
   const [pizzas, setPizza] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,12 +18,16 @@ const Home = ({searchValue}) => {
     name: "popularity",
     sortProperty: "rating",
   });
-  const search = searchValue ? `&search=${searchValue}` : ''
+
+  // pagination states
+  const[currentPage, setCurrentPage] = useState(1)
+
+  const search = searchValue ? `&search=${searchValue}` : "";
 
   useEffect(() => {
     setIsLoading(true);
     fetch(
-      `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?${
+      `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?page=${currentPage}&limit=3&${
         categoryId > 0 ? `category=${categoryId}` : ""
       }&sortBy=${sortType.sortProperty.replace("-", "")}${search}&order=${
         sortType.sortProperty.includes("-") ? "asc" : "desc"
@@ -35,9 +40,7 @@ const Home = ({searchValue}) => {
         console.log(sortType.sortProperty);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue]); // watching the change of categoryId
-
-
+  }, [categoryId, sortType, searchValue, currentPage]); // watching the change of categoryId
 
   /* const pizzasSorting = pizzas
   .filter((obj) => {
@@ -48,8 +51,6 @@ const Home = ({searchValue}) => {
     }
   } )
   .map((obj) => <PizzaBlock key={obj.id} {...obj} />) */
-
-
 
   return (
     <div className="container">
@@ -65,8 +66,7 @@ const Home = ({searchValue}) => {
         <>
           {isLoading
             ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-            : pizzas.map(pizza => <PizzaBlock key={pizza.id} {...pizza} />)
-          }
+            : pizzas.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
         </>
 
         {/* <PizzaBlock
@@ -80,7 +80,10 @@ const Home = ({searchValue}) => {
 
         {/* <PizzaBlock title='Mexican Pizza' price='$19.99'/>
               <PizzaBlock title='Italian Pizza' price='$19.99'/> */}
+
+        
       </div>
+      <Pagination onPageChange={(number) => setCurrentPage(number)} />
     </div>
   );
 };
