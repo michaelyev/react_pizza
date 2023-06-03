@@ -16,8 +16,7 @@ import { SearchContext } from "../App";
 const Home = () => {
 //redux
   const dispatch = useDispatch()
-  const categoryId = useSelector(state => state.filterSlice.categoryId)
-  const sortType = useSelector(state => state.filterSlice.sort.sortProperty)
+  const {categoryId, sort } = useSelector(state => state.filterSlice)  //destructuring 
 
   console.log(categoryId)
 
@@ -41,18 +40,18 @@ const Home = () => {
     fetch(
       `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?page=${currentPage}&limit=3&${
         categoryId > 0 ? `category=${categoryId}` : ""
-      }&sortBy=${sortType.replace("-", "")}${search}&order=${
-        sortType.includes("-") ? "asc" : "desc"
+      }&sortBy=${sort.sortProperty.replace("-", "")}${search}&order=${
+        sort.sortProperty.includes("-") ? "asc" : "desc"
       }`
     ) //
       .then((res) => res.json())
       .then((pizzaData) => {
         setPizza(pizzaData);
         setIsLoading(false);
-        console.log(sortType.sortProperty);
+        
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, currentPage]); // watching the change of categoryId
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]); // watching the change of categoryId
 
   /* const pizzasSorting = pizzas
   .filter((obj) => {
