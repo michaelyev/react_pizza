@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 
 import { useState, useEffect, useContext  } from "react";
 
@@ -18,13 +19,12 @@ const Home = () => {
   const dispatch = useDispatch()
   const {categoryId, sort } = useSelector(state => state.filterSlice)  //destructuring 
 
-  console.log(categoryId)
-
-
-  const { searchValue } = useContext(SearchContext)
+  const { searchValue, setSearchValue} = useContext(SearchContext)
 
   const [pizzas, setPizza] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  
 
   // children states
   // const [categoryId, setCategoryId] = useState(0);
@@ -37,7 +37,18 @@ const Home = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    fetch(
+
+    axios.get(`https://646e6b9c9c677e23218ba3c6.mockapi.io/items?page=${currentPage}&limit=3&${
+      categoryId > 0 ? `category=${categoryId}` : ""
+    }&sortBy=${sort.sortProperty.replace("-", "")}${search}&order=${
+      sort.sortProperty.includes("-") ? "asc" : "desc"
+    }`)
+    .then(pizzaData => {
+      setPizza(pizzaData.data);
+      setIsLoading(false)
+    })
+
+    /* fetch(
       `https://646e6b9c9c677e23218ba3c6.mockapi.io/items?page=${currentPage}&limit=3&${
         categoryId > 0 ? `category=${categoryId}` : ""
       }&sortBy=${sort.sortProperty.replace("-", "")}${search}&order=${
@@ -49,7 +60,7 @@ const Home = () => {
         setPizza(pizzaData);
         setIsLoading(false);
         
-      });
+      }); */
     window.scrollTo(0, 0);
   }, [categoryId, sort.sortProperty, searchValue, currentPage]); // watching the change of categoryId
 
