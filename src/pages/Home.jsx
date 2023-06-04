@@ -5,7 +5,7 @@ import { useState, useEffect, useContext  } from "react";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
-import { setCategoryId } from "../redux/slices/filterSlice";
+import { setCategoryId, setCurrentPage } from "../redux/slices/filterSlice";
 
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
@@ -17,7 +17,7 @@ import { SearchContext } from "../App";
 const Home = () => {
 //redux
   const dispatch = useDispatch()
-  const {categoryId, sort } = useSelector(state => state.filterSlice)  //destructuring 
+  const {categoryId, sort, currentPage  } = useSelector(state => state.filterSlice)  //destructuring 
 
   const { searchValue, setSearchValue} = useContext(SearchContext)
 
@@ -25,13 +25,17 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   
+  
 
   // children states
   // const [categoryId, setCategoryId] = useState(0);
   
 
   // pagination states
-  const[currentPage, setCurrentPage] = useState(1)
+
+  const onChangePage = number => {
+    dispatch(setCurrentPage(number ))
+  }
 
   const search = searchValue ? `&search=${searchValue}` : "";
 
@@ -105,7 +109,7 @@ const Home = () => {
 
         
       </div>
-      <Pagination onPageChange={(number) => setCurrentPage(number)} />
+      <Pagination currentPage={currentPage} onPageChange={onChangePage } />
     </div>
   );
 };
